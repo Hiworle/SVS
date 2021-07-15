@@ -71,6 +71,38 @@ public class Voter {
     }
 
     /**
+     * 把二进制字符串s分成k组，每组digit个数字，输出转化成十进制的int数组
+     * 
+     * @param s     二进制字符串
+     * @param digit 每组的数字数
+     * @return 返回int型的含有k个数的数组
+     */
+    public int[] divideGroup(String s, int digit) {
+        int k; // k是分成的组数
+        int MOD = s.length() % digit;// MOD是分组的余数
+        if (MOD == 0) {
+            k = s.length() / digit;
+        } else {
+            k = s.length() / digit + 1;
+        }
+        int[] group = new int[k];
+
+        String subString;
+        if (MOD != 0) {
+            subString = s.substring(0, MOD);
+            group[0] = Integer.parseInt(subString, 2);// 有余数，把0到MOD位的二进制数转到group[0]
+        } else {
+            subString = s.substring(0, digit);
+            group[0] = Integer.parseInt(subString, 2);// 没余数，直接把前n位转到group[0]
+        }
+        for (int i = 1; i < k; i++) {
+            subString = s.substring(i * digit, (i + 1) * digit);
+            group[i] = Integer.parseInt(subString, 2);// 接下来每n位转到group[i]中
+        }
+        return group;
+    }
+
+    /**
      * 用二进制计算十进制选票信息
      */
     public void setDecimal() {
@@ -78,10 +110,16 @@ public class Voter {
     }
 
     /**
-     * 用receiveMsg计算投票结果result
+     * 对receiveMsg求和计算result
      */
     public void getResult() {
-        // TODO
+        BigInteger resultBigInteger = new BigInteger("0");
+        for (int i = 0; i < candidate.number; i++) {
+            resultBigInteger = resultBigInteger.add(new BigInteger(receiveMsg[i]));// 对receiveMsg求和
+        }
+        String resultString = resultBigInteger.toString(2);// 转化为二进制字符串
+
+        result = divideGroup(resultString, digit); // 二进制字符串分组计算出result
     }
 
     /**
