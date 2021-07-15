@@ -63,7 +63,7 @@ public class Voter {
         randomDec = new BigInteger[number];
         for (int i = 0; i < number - 1; i++) {
             r = random.nextDouble(); // 随机生成[0,1)的数给r
-            BigInteger a = new BigInteger(r.toString());
+            BigInteger a = new BigInteger(r.toString());// 把生成的随机数转为BigInteger型
             randomDec[i] = remain.multiply(a);
             remain = remain.subtract(randomDec[i]);
         }
@@ -78,7 +78,7 @@ public class Voter {
     }
 
     /**
-     * 计算投票结果result
+     * 用receiveMsg计算投票结果result
      */
     public void getResult() {
         // TODO
