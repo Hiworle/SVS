@@ -65,7 +65,7 @@ public class Voter {
      * 把decimal随机分成number份
      * 
      */
-    private void setRadomDec() {
+    private void setRadomDec() { // TODO 这里有一个bug，无法真正随机生成，应该用分n-2段的形式修改
         Random random = new Random();
         BigInteger remain = new BigInteger(decimal.toString(10)); // 表示随机分后剩余的数
         Double r;
