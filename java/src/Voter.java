@@ -1,3 +1,4 @@
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
@@ -27,6 +28,10 @@ public class Voter {
         this.setDecimal();
         this.setIps(ipMsg);
         this.setRadomDec();
+        // ==================================================
+        // ==== 数据收发
+        // ==================================================
+        // this.getResult();
     }
 
     /**
@@ -40,14 +45,18 @@ public class Voter {
             // 每一组先补digit-1个0
             digit = this.digit;
             while (--digit != 0) {
-                binary.concat("0");
+                if (binary == null) {
+                    binary = "0";
+                } else {
+                    binary = binary.concat("0");
+                }
             }
 
             // 投了在右边补1，没投补0
             if (voteMsg[i] == true) {
-                binary.concat("1");
+                binary = binary.concat("1");
             } else {
-                binary.concat("0");
+                binary = binary.concat("0");
             }
         }
     }
@@ -63,8 +72,9 @@ public class Voter {
         randomDec = new BigInteger[number];
         for (int i = 0; i < number - 1; i++) {
             r = random.nextDouble(); // 随机生成[0,1)的数给r
-            BigInteger a = new BigInteger(r.toString());// 把生成的随机数转为BigInteger型
-            randomDec[i] = remain.multiply(a);
+            BigDecimal bigDecimal = new BigDecimal(r);// 把生成的随机数转为BigDecimal型
+            bigDecimal = bigDecimal.multiply(new BigDecimal(remain));// 用随机数乘remain
+            randomDec[i] = bigDecimal.toBigInteger();// 保留整数部分
             remain = remain.subtract(randomDec[i]);
         }
         randomDec[number - 1] = remain; // 最后一个把剩余的数全部取走
