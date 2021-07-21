@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Voter {
@@ -62,22 +63,24 @@ public class Voter {
     }
 
     /**
-     * 把decimal随机分成number份
+     * 把decimal随机分成number份，放在radomDec中
      * 
      */
-    private void setRadomDec() { // TODO 这里有一个bug，无法真正随机生成，应该用分n-2段的形式修改
-        Random random = new Random();
-        BigInteger remain = new BigInteger(decimal.toString(10)); // 表示随机分后剩余的数
-        Double r;
+    private void setRadomDec() {
         randomDec = new BigInteger[number];
-        for (int i = 0; i < number - 1; i++) {
-            r = random.nextDouble(); // 随机生成[0,1)的数给r
-            BigDecimal bigDecimal = new BigDecimal(r);// 把生成的随机数转为BigDecimal型
-            bigDecimal = bigDecimal.multiply(new BigDecimal(remain));// 用随机数乘remain
-            randomDec[i] = bigDecimal.toBigInteger();// 保留整数部分
-            remain = remain.subtract(randomDec[i]);
+        BigDecimal bigDecimal[] = new BigDecimal[number - 1]; // 需要number-1个随机数
+        for (int i = 0; i < number - 1; i++) { // 生成number-1个随机数
+            bigDecimal[i] = new BigDecimal(decimal);
+            bigDecimal[i] = bigDecimal[i].multiply(new BigDecimal(Math.random()));
         }
-        randomDec[number - 1] = remain; // 最后一个把剩余的数全部取走
+        Arrays.sort(bigDecimal); // 随机数组升序排序
+
+        // 根据随机数分段求每段的大小
+        randomDec[0] = bigDecimal[0].toBigInteger();
+        for (int i = 1; i < number - 1; i++) {
+            randomDec[i] = bigDecimal[i].toBigInteger().subtract(bigDecimal[i - 1].toBigInteger());
+        }
+        randomDec[number - 1] = decimal.subtract(bigDecimal[number - 2].toBigInteger());
     }
 
     /**
