@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -71,7 +72,7 @@ public class Voter {
         BigDecimal bigDecimal[] = new BigDecimal[number - 1]; // 需要number-1个随机数
         for (int i = 0; i < number - 1; i++) { // 生成number-1个随机数
             bigDecimal[i] = new BigDecimal(decimal);
-            bigDecimal[i] = bigDecimal[i].multiply(new BigDecimal(Math.random()));
+            bigDecimal[i] = bigDecimal[i].multiply(new BigDecimal(Math.random())).setScale(0, RoundingMode.HALF_UP); // 对生成的随机数进行四舍五入
         }
         Arrays.sort(bigDecimal); // 随机数组升序排序
 
