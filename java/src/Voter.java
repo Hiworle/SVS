@@ -154,6 +154,7 @@ public class Voter {
      * @param ip
      */
     public void send(String msg, String ip) {
+        //ip为接受msg者的地址
         Socket mysocket;
         DataOutputStream out=null;
         try{
