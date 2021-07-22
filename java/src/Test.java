@@ -1,7 +1,7 @@
 import java.util.Arrays;
 
 public class Test {
-    public static void main(String[] args) throws Exception {
+    public void run() throws Exception {
         Candidate candidate = new Candidate(3);
         candidate.name[0] = "Alice";
         candidate.name[1] = "Bob";
