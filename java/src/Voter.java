@@ -1,10 +1,12 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
-import java.util.Random;
-import java.io.*;
-import java.net.*;
 
 public class Voter {
     int id; // 投票者的编号
@@ -154,16 +156,15 @@ public class Voter {
      * @param ip
      */
     public void send(String msg, String ip) {
-        //ip为接受msg者的地址
+        // ip为接受msg者的地址
         Socket mysocket;
-        DataOutputStream out=null;
-        try{
-            mysocket=new Socket("ip",4331);
-            out=new DataOutputStream(mysocket.getOutputStream());
+        DataOutputStream out = null;
+        try {
+            mysocket = new Socket("ip", 4331);
+            out = new DataOutputStream(mysocket.getOutputStream());
             out.writeUTF(msg);
-        }
-        catch(Exception e){
-            System.out.println("未知错误"+e);
+        } catch (Exception e) {
+            System.out.println("未知错误" + e);
         }
     }
 
@@ -174,21 +175,21 @@ public class Voter {
      * @param ip
      */
     public void receive(String msg, String ip) {
-        ServerSocket server=null;
-        Socket you=null;
-        DataInputStream in=null;
+        ServerSocket server = null;
+        Socket you = null;
+        DataInputStream in = null;
         try {
-            server=new ServerSocket(4331);
+            server = new ServerSocket(4331);
         } catch (IOException e1) {
             System.out.println(e1);
         }
         try {
             System.out.println("等待另一名投票者提供数据");
-            you=server.accept();
-            in=new DataInputStream(you.getInputStream());
-            msg=in.readUTF();
+            you = server.accept();
+            in = new DataInputStream(you.getInputStream());
+            msg = in.readUTF();
         } catch (Exception e) {
-          System.out.println("待处理错误");
+            System.out.println("待处理错误");
         }
     }
 }
