@@ -1,14 +1,10 @@
 import java.io.*;
 import java.net.*;
-import java.util.*;
-
-import org.graalvm.compiler.nodes.InliningLog.UpdateScope;
 
 //本程序仅用于测试使用
 public class TestServer {
    public static void main(String args[]) {
       ServerSocket server = null;
-      ServerThread thread;
       Socket you = null;
       int number = 0;
       int numbermax = 1;
@@ -24,6 +20,7 @@ public class TestServer {
          try {
             System.out.println(" 等待客户呼叫");
             you = server.accept();
+            System.out.println("num="+number);
             System.out.println("客户的地址:" + you.getInetAddress());
          } catch (IOException e) {
             System.out.println("正在等待客户");
@@ -35,34 +32,32 @@ public class TestServer {
             if (number == numbermax) {
                ServerThread.flag = true;
                ServerThread.number = number;
-               int i = 0;
-               for (i = 0; i < number; i++) {
-                  ServerThread.ips = serverips;
+               ServerThread.ips = serverips;
                }
             }
          }
       }
    }
-}
 
 class ServerThread extends Thread {
-   static int number;
+   static int number=0;
    static String ips[];
    static boolean flag;
    int id = 0;
-   Socket socket=null;
-      DataOutputStream out = null;
-      DataInputStream in = null;
+   Socket socket = null;
+   DataOutputStream out = null;
+   DataInputStream in = null;
+
    ServerThread(Socket t, int id) {
       socket = t;
       this.id = id;
       try {
+         System.out.println("现在是第"+id+"名客户"+flag);
          out = new DataOutputStream(socket.getOutputStream());
          in = new DataInputStream(socket.getInputStream());
       } catch (IOException e) {
       }
    }
-
    public void run() {
       while (true) {
          try {
@@ -72,6 +67,7 @@ class ServerThread extends Thread {
                for (int i = 0; i < number; i++) {
                   out.writeUTF(ips[i]);
                }
+               return;
             }
          } catch (IOException e) {
             System.out.println("客户离开");

@@ -5,15 +5,10 @@ import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import javax.swing.plaf.TreeUI;
-import javax.xml.crypto.Data;
-
 //测试用客户端
 public class client {
    public static void main(String[] args) throws Exception {
       Socket mysocket;
-      DataOutputStream out = null;
       DataInputStream in = null;
       InetAddress localAddress = InetAddress.getLocalHost();
       int number = 1;
@@ -26,17 +21,11 @@ public class client {
          System.out.println("正在呼叫服务器");
          System.out.println(localAddress.getHostAddress());
          mysocket = new Socket("192.168.240.130", 4332);
-         System.out.println("localAddress.getHostAddress()");
-         out = new DataOutputStream(mysocket.getOutputStream());
          in = new DataInputStream(mysocket.getInputStream());
-         System.out.println("kk");
-         out.writeUTF(localAddress.getHostAddress());
          number = in.readInt();
          id = in.readInt();
-
          for (i = 0; i < number; i++) {
             ips[i] = in.readUTF();
-            System.out.println("i");
          }
          System.out.println("其中一位的地址是：" + ips[0]);
       } catch (Exception e) {
@@ -49,8 +38,8 @@ public class client {
       BigInteger sendMsg[] = me.randomDec;
       Receive receive = new Receive(receiveMsg, sendMsg);
       Thread thread = new Thread(receive);// 在这个线程中,自己作为服务端与id大于自己的投票者进行通信
-      Send send=new Send(receiveMsg, sendMsg, id,ips);
-      Thread thread2 = new Thread(send);//在这个线程中，自己作为客户端与id小于自己的投票者进行通信
+      Send send = new Send(receiveMsg, sendMsg, id, ips);
+      Thread thread2 = new Thread(send);// 在这个线程中，自己作为客户端与id小于自己的投票者进行通信
       thread.start();
       thread2.start();
    }
@@ -83,34 +72,34 @@ class Receive implements Runnable {
          new communication(you, receiveMsg, sendmsg, num).start();
          num++;
       }
-   }  
+   }
 }
 
-class Send implements Runnable{
-   Socket socket=null;
+class Send implements Runnable {
+   Socket socket = null;
    String receiveMsg[];
    BigInteger sendMsg[];
    ServerSocket server = null;
    Socket you = null;
    int id;
-   int num=0;
+   int num = 0;
    String ips[];
-   Send(String receivemsg[], BigInteger sendMsg[],int id,String ips[])
-   {
-      this.id=id;
-      this.receiveMsg=receivemsg;
-      this.sendMsg=sendMsg;
-      this.ips=ips;
+
+   Send(String receivemsg[], BigInteger sendMsg[], int id, String ips[]) {
+      this.id = id;
+      this.receiveMsg = receivemsg;
+      this.sendMsg = sendMsg;
+      this.ips = ips;
    }
-   public void run(){
-      for(num=0;num<id;num++)
-      {
-         try{
-         you=new Socket(ips[num],4399);
-         new communication(you, receiveMsg, sendMsg, num).start();
-      }catch(Exception e){
-         System.out.println("未能建立套接字连接(坏消息x2)");
-      }
+
+   public void run() {
+      for (num = 0; num < id; num++) {
+         try {
+            you = new Socket(ips[num], 4399);
+            new communication(you, receiveMsg, sendMsg, num).start();
+         } catch (Exception e) {
+            System.out.println("未能建立套接字连接(坏消息x2)");
+         }
       }
    }
 }
@@ -121,7 +110,7 @@ class communication extends Thread {
    Socket socket = null;
    DataInputStream in = null;
    DataOutputStream out = null;
-   int num=0;
+   int num = 0;
 
    communication(Socket socket, String receiveMsg[], BigInteger sendMsg[], int num) {
       this.socket = socket;
@@ -131,7 +120,8 @@ class communication extends Thread {
       try {
          in = new DataInputStream(socket.getInputStream());
          out = new DataOutputStream(socket.getOutputStream());
-      } catch (IOException e) {}
+      } catch (IOException e) {
+      }
    }
 
    public void run() {
@@ -145,4 +135,4 @@ class communication extends Thread {
          }
       }
    }
-}   
+}
