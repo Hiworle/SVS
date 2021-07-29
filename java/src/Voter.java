@@ -1,10 +1,12 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Arrays;
-import java.util.Random;
-import java.io.*;
-import java.net.*;
 
 public class Voter {
     int id; // 投票者的编号
@@ -147,7 +149,7 @@ public class Voter {
         this.ips = ips;
     }
 
-    /**
+    /**这个函数暂时不用
      * 发送信息
      * 
      * @param msg
@@ -166,7 +168,7 @@ public class Voter {
         }
     }
 
-    /**
+    /**这个函数暂时不用
      * 接收信息
      * 
      * @param msg
