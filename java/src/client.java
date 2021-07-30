@@ -26,7 +26,7 @@ public class client {
       // 获取所有投票者的ip地址
       try {
          System.out.println("正在呼叫服务器");
-         mysocket = new Socket("192.168.61.130", 4332);
+         mysocket = new Socket(InetAddress.getLocalHost().getHostAddress(), 4332);
          System.out.println(InetAddress.getLocalHost().getHostAddress());
          in = new DataInputStream(mysocket.getInputStream());
          number = in.readInt();
@@ -38,7 +38,9 @@ public class client {
       } catch (Exception e) {
          System.out.println("未知错误222" + e);
       }
+      System.out.println(number);
       me = new Voter(number, null, MyVoterMsg, ips);
+      System.out.println("hello");
       receiveMsg = new String[number];
       receiveMsg[id] = me.randomDec[id].toString();
       sendMsg = me.randomDec;
