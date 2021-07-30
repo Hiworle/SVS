@@ -59,10 +59,18 @@ public class Voter {
             }
 
             // 投了在右边补1，没投补0
-            if (voteMsg[i] == true) {
-                binary = binary.concat("1");
+            if (binary == null) {
+                if (voteMsg[i] == true) {
+                    binary = "1";
+                } else {
+                    binary = "0";
+                }
             } else {
-                binary = binary.concat("0");
+                if (voteMsg[i] == true) {
+                    binary = binary.concat("1");
+                } else {
+                    binary = binary.concat("0");
+                }
             }
         }
     }
@@ -149,8 +157,8 @@ public class Voter {
         this.ips = ips;
     }
 
-    /**这个函数暂时不用
-     * 发送信息
+    /**
+     * 这个函数暂时不用 发送信息
      * 
      * @param msg
      * @param ip
@@ -168,8 +176,8 @@ public class Voter {
         }
     }
 
-    /**这个函数暂时不用
-     * 接收信息
+    /**
+     * 这个函数暂时不用 接收信息
      * 
      * @param msg
      * @param ip
