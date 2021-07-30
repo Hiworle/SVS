@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.Thread.State;
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,7 +17,7 @@ public class client {
       String receiveMsg[];
       BigInteger sendMsg[];
       String receiveMsg2[];
-      int number = 1;
+      int number=0;
       int id = 0; // id标识了这名投票者在IPS[]中的位置
       String ips[];
       ips = new String[100];
@@ -25,7 +26,8 @@ public class client {
       // 获取所有投票者的ip地址
       try {
          System.out.println("正在呼叫服务器");
-         mysocket = new Socket("192.168.240.130", 4332);
+         mysocket = new Socket("192.168.61.130", 4332);
+         System.out.println(InetAddress.getLocalHost().getHostAddress());
          in = new DataInputStream(mysocket.getInputStream());
          number = in.readInt();
          id = in.readInt();
@@ -100,10 +102,10 @@ class Receive implements Runnable {
       }
       if (you != null) {
          if (window == 0) {
-            new communication(you, receiveMsg, sendMsg, num).start();
+            new communication(you, receiveMsg, sendMsg, num, true).start();
             num++;
          } else if (window == 1) {
-            new communication(you, receiveMsg, s, num).start();
+            new communication(you, receiveMsg, s, num, true).start();
             num++;
          }
       }
@@ -143,7 +145,7 @@ class Send implements Runnable {
          for (num = 0; num < id; num++) {
             try {
                you = new Socket(ips[num], 4399);
-               new communication(you, receiveMsg, sendMsg, num).start();
+               new communication(you, receiveMsg, sendMsg, num, false).start();
             } catch (Exception e) {
                System.out.println("未能建立套接字连接(坏消息x2)");
             }
@@ -152,7 +154,7 @@ class Send implements Runnable {
          for (num = 0; num < id; num++) {
             try {
                you = new Socket(ips[num], 4399);
-               new communication(you, receiveMsg, s, num).start();
+               new communication(you, receiveMsg, s, num, false).start();
             } catch (Exception e) {
                System.out.println("未能建立套接字连接(坏消息x2)");
             }
@@ -170,12 +172,14 @@ class communication extends Thread {
    BigInteger s;
    int num = 0;
    int window;
+   boolean choice;
 
-   communication(Socket socket, String receiveMsg[], BigInteger sendMsg[], int num) {
+   communication(Socket socket, String receiveMsg[], BigInteger sendMsg[], int num, boolean choice) {
       this.socket = socket;
       this.receiveMsg = receiveMsg;
       this.sendmsg = sendMsg;
       this.num = num;
+      this.choice = choice;
       window = 0;
       try {
          in = new DataInputStream(socket.getInputStream());
@@ -184,10 +188,11 @@ class communication extends Thread {
       }
    }
 
-   communication(Socket socket, String receiveMsg[], BigInteger s, int num) {
+   communication(Socket socket, String receiveMsg[], BigInteger s, int num, boolean choice) {
       this.socket = socket;
       this.receiveMsg = receiveMsg;
       this.s = s;
+      this.choice = choice;
       window = 1;
       try {
          in = new DataInputStream(socket.getInputStream());
@@ -196,27 +201,31 @@ class communication extends Thread {
       }
    }
 
-   public void run() {// 这个方法存在问题，待修改
-      if (window == 0)
+   public void run() {
+      if (window == 0) {
          while (true) {
             try {
-               out.writeUTF(sendmsg[num].toString());
-               
-               receiveMsg[num] = in.readUTF();
+               if (choice == false) {
+                  out.writeUTF(sendmsg[num].toString());
+                  receiveMsg[num] = in.readUTF();
+               }
                return;
             } catch (IOException e) {
                System.out.println("正在建立连接（坏消息）");
             }
          }
-      if (window == 1)
+      }
+      if (window == 1) {
          while (true) {
             try {
+               if (choice == true)//choice代表是receive还是send创建的这个类，两种choice意味着是先发送数还是先收数据
+                  receiveMsg[num] = in.readUTF();
                out.writeUTF(s.toString());
-               receiveMsg[num] = in.readUTF();
                return;
             } catch (IOException e) {
                System.out.println("正在建立连接（坏消息）");
             }
          }
+      }
    }
 }

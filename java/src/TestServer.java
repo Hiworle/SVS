@@ -29,8 +29,8 @@ public class TestServer {
          }
          if (you != null) {
             serverips[number] = you.getInetAddress().getHostAddress();
+            new ServerThread(you,number).start(); // 为每个客户启动一个专门的线程
             number++;
-            new ServerThread(you).start(); // 为每个客户启动一个专门的线程
             if (number == numbermax) {
                ServerThread.flag = true;
                ServerThread.number = number;
@@ -49,14 +49,16 @@ class ServerThread extends Thread {
    static String ips[] = new String[100];
    static boolean flag;
    Socket socket;
+   int id;
    DataOutputStream out = null;
    DataInputStream in = null;
 
-   ServerThread(Socket t) {
+   ServerThread(Socket t,int id) {
       socket = t;
       try {
          out = new DataOutputStream(socket.getOutputStream());
          in = new DataInputStream(socket.getInputStream());
+         this.id=id;
       } catch (IOException e) {
       }
    }
@@ -64,8 +66,10 @@ class ServerThread extends Thread {
    public void run() {
       while (true) {
          try {
+            System.out.println("ll");
             if (flag == true) {
                out.writeInt(number);
+               out.writeInt(id);
                for (int i = 0; i < number; i++) {
                   out.writeUTF(ips[i]);
                }
