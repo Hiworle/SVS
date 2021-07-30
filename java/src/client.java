@@ -1,7 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.Thread.State;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -17,7 +16,8 @@ public class client {
       String receiveMsg[];
       BigInteger sendMsg[];
       String receiveMsg2[];
-      int number=0;
+      BigInteger sendMsg2[];
+      int number = 0;
       int id = 0; // id标识了这名投票者在IPS[]中的位置
       String ips[];
       ips = new String[100];
@@ -35,95 +35,118 @@ public class client {
             ips[i] = in.readUTF();
          }
          System.out.println("其中一位的地址是：" + ips[0]);
+         System.out.println("我是第" + id + "位投票者client1");
       } catch (Exception e) {
          System.out.println("未知错误222" + e);
       }
-      System.out.println(number);
-      me = new Voter(number, null, MyVoterMsg, ips);
-      System.out.println("hello");
+
+      Candidate candidate = new Candidate(3);
+      me = new Voter(number, candidate, MyVoterMsg, ips);
       receiveMsg = new String[number];
       receiveMsg[id] = me.randomDec[id].toString();
       sendMsg = me.randomDec;
-      Receive receive = new Receive(receiveMsg, sendMsg);
+      Receive receive = new Receive(receiveMsg, sendMsg, id, number);
       Thread thread = new Thread(receive);// 在这个线程中,自己作为服务端与id大于自己的投票者进行通信
       Send send = new Send(receiveMsg, sendMsg, id, ips);
       Thread thread2 = new Thread(send);// 在这个线程中，自己作为客户端与id小于自己的投票者进行通信
       thread.start();
       thread2.start();
-      if (thread.getState() == State.TERMINATED && thread2.getState() == State.TERMINATED) {
-         for (i = 0; i < number - 1; i++) {
-            sum.add(new BigInteger(receiveMsg[i]));
-         }
-         receiveMsg2 = new String[number];
-         receiveMsg2[id] = sum.toString();
-         Receive receive2 = new Receive(receiveMsg2, sum);
-         Thread thread3 = new Thread(receive2);// 在这个线程中,自己作为服务端与id大于自己的投票者进行通信
-         Send send2 = new Send(receiveMsg2, sum, id, ips);
-         Thread thread4 = new Thread(send2);// 在这个线程中，自己作为客户端与id小于自己的投票者进行通信
-         thread3.start();
-         thread4.start();
-         if (thread3.getState() == State.TERMINATED && thread4.getState() == State.TERMINATED) {
-            me.receiveMsg = receiveMsg2;
-            me.getResult();
-         }
+      thread.join();
+      thread2.join();
+      System.out.println("第一次数据传输完成");
+      System.out.println("这次收到信息的第一个" + receiveMsg[0]);
+      System.out.println("收到信息的第二个" + receiveMsg[1]);
+
+      for (i = 0; i < number; i++) {
+         sum = sum.add(new BigInteger(receiveMsg[i]));
       }
+      receiveMsg2 = new String[number];
+      receiveMsg2[id] = sum.toString();
+      sendMsg2 = new BigInteger[number];
+      for (i = 0; i < number; i++) {
+         sendMsg2[i] = sum;
+      }
+      Receive receive2 = new Receive(receiveMsg2, sendMsg2, id, number);
+      Thread thread3 = new Thread(receive2);// 在这个线程中,自己作为服务端与id大于自己的投票者进行通信
+      Send send2 = new Send(receiveMsg2, sendMsg2, id, ips);
+      Thread thread4 = new Thread(send2);// 在这个线程中，自己作为客户端与id小于自己的投票者进行通信
+      thread3.start();
+      thread4.start();
+      thread3.join();
+      thread4.join();
+      System.out.println("第三阶段完成（吃苹果）");
+      me.receiveMsg = receiveMsg2;
+      System.out.println("收到信息的第一个" + me.receiveMsg[0]);
+      System.out.println("收到信息的第二个" + me.receiveMsg[1]);
+      System.out.println("有几位投票人？" + me.number);
+      me.getResult();
+      System.out.println("候选人1的票数：" + me.result[0]);
    }
 }
 
-class Receive implements Runnable {
+class Receive implements Runnable {// 接听者
    String receiveMsg[];
    BigInteger sendMsg[];
+   int number;
+   int id;
    ServerSocket server = null;
    Socket you = null;
-   int num = 0;// 启动子线程时，该数字用来标识子线程应该传输出去的数组编号
-   BigInteger s;
-   int window;
+   int num = 0;
 
-   Receive(String receiveMsg[], BigInteger sendMsg[]) {
+   Receive(String receiveMsg[], BigInteger sendMsg[], int id, int number) {
       this.receiveMsg = receiveMsg;
       this.sendMsg = sendMsg;
-      window = 0;
-   }
-
-   Receive(String receiveMsg[], BigInteger s) {
-      this.receiveMsg = receiveMsg;
-      this.s = s;
-      window = 1;
+      this.id = id;
+      this.number = number;
    }
 
    public void run() {
+      if (number == 1) {
+         return;
+      }
       try {
          server = new ServerSocket(4399);
       } catch (IOException e1) {
       }
-      try {
-         you = server.accept();
-
-      } catch (Exception e) {
-         System.out.println("等待其他人呼叫");
-      }
-      if (you != null) {
-         if (window == 0) {
-            new communication(you, receiveMsg, sendMsg, num, true).start();
-            num++;
-         } else if (window == 1) {
-            new communication(you, receiveMsg, s, num, true).start();
-            num++;
+      id++;
+      communication threads[] = new communication[number - id];
+      while (id < number) {
+         try {
+            you = server.accept();
+         } catch (IOException e) {
+            System.out.println("等待其他人呼叫");
+         }
+         try {
+            Thread.sleep(500);
+         } catch (InterruptedException e) {
+         }
+         if (you != null) {
+            threads[num] = new communication(you, receiveMsg, sendMsg[id], id, true);
+            threads[num++].start();
+            id++;
          }
       }
+      for (num--; num >= 0; num--) {
+         try {
+            threads[num].join();
+         } catch (Exception e) {
+         }
+      }
+      try {
+         server.close();
+      } catch (Exception e) {
+      } // 必须要有
    }
 }
 
-class Send implements Runnable {
+class Send implements Runnable {// 拨打者
    Socket socket = null;
    String receiveMsg[];
    BigInteger sendMsg[];
    ServerSocket server = null;
-   BigInteger s;
    Socket you = null;
    int id;
    int num = 0;
-   int window;
    String ips[];
 
    Send(String receiveMsg[], BigInteger sendMsg[], int id, String ips[]) {
@@ -131,35 +154,27 @@ class Send implements Runnable {
       this.sendMsg = sendMsg;
       this.id = id;
       this.ips = ips;
-      window = 0;
-   }
-
-   Send(String receiveMsg[], BigInteger s, int id, String ips[]) {
-      this.receiveMsg = receiveMsg;
-      this.s = s;
-      this.id = id;
-      this.ips = ips;
-      window = 1;
+      num = 0;
    }
 
    public void run() {
-      if (window == 0) {
-         for (num = 0; num < id; num++) {
-            try {
-               you = new Socket(ips[num], 4399);
-               new communication(you, receiveMsg, sendMsg, num, false).start();
-            } catch (Exception e) {
-               System.out.println("未能建立套接字连接(坏消息x2)");
+      communication threads[] = new communication[id];
+      while (num < id) {
+         try {
+            you = new Socket(ips[num], 4399);
+            if (you != null) {
+               threads[num] = new communication(you, receiveMsg, sendMsg[num], num, false);
+               threads[num].start();
+               num++;
             }
+            you = null;
+         } catch (Exception e) {
          }
-      } else if (window == 1) {
-         for (num = 0; num < id; num++) {
-            try {
-               you = new Socket(ips[num], 4399);
-               new communication(you, receiveMsg, s, num, false).start();
-            } catch (Exception e) {
-               System.out.println("未能建立套接字连接(坏消息x2)");
-            }
+      }
+      for (; num >= 0; num--) {
+         try {
+            threads[num].join();
+         } catch (Exception e) {
          }
       }
    }
@@ -167,35 +182,19 @@ class Send implements Runnable {
 
 class communication extends Thread {
    String receiveMsg[];
-   BigInteger sendmsg[];
    Socket socket = null;
    DataInputStream in = null;
    DataOutputStream out = null;
-   BigInteger s;
+   BigInteger sendMsg;
    int num = 0;
-   int window;
    boolean choice;
 
-   communication(Socket socket, String receiveMsg[], BigInteger sendMsg[], int num, boolean choice) {
+   communication(Socket socket, String receiveMsg[], BigInteger sendMsg, int num, boolean choice) {
       this.socket = socket;
       this.receiveMsg = receiveMsg;
-      this.sendmsg = sendMsg;
+      this.sendMsg = sendMsg;
       this.num = num;
       this.choice = choice;
-      window = 0;
-      try {
-         in = new DataInputStream(socket.getInputStream());
-         out = new DataOutputStream(socket.getOutputStream());
-      } catch (IOException e) {
-      }
-   }
-
-   communication(Socket socket, String receiveMsg[], BigInteger s, int num, boolean choice) {
-      this.socket = socket;
-      this.receiveMsg = receiveMsg;
-      this.s = s;
-      this.choice = choice;
-      window = 1;
       try {
          in = new DataInputStream(socket.getInputStream());
          out = new DataOutputStream(socket.getOutputStream());
@@ -204,29 +203,23 @@ class communication extends Thread {
    }
 
    public void run() {
-      if (window == 0) {
-         while (true) {
-            try {
-               if (choice == false) {
-                  out.writeUTF(sendmsg[num].toString());
-                  receiveMsg[num] = in.readUTF();
-               }
-               return;
-            } catch (IOException e) {
-               System.out.println("正在建立连接（坏消息）");
-            }
+      if (choice == false) {
+         try {
+            out.writeUTF(sendMsg.toString());
+            receiveMsg[num] = in.readUTF();
+            return;
+         } catch (IOException e) {
+            System.out.println("正在建立连接（坏消息）+1");
          }
-      }
-      if (window == 1) {
-         while (true) {
-            try {
-               if (choice == true)//choice代表是receive还是send创建的这个类，两种choice意味着是先发送数还是先收数据
-                  receiveMsg[num] = in.readUTF();
-               out.writeUTF(s.toString());
+      } else if (choice == true) {
+         try {
+            if (choice == true) {
+               receiveMsg[num] = in.readUTF();
+               out.writeUTF(sendMsg.toString());
                return;
-            } catch (IOException e) {
-               System.out.println("正在建立连接（坏消息）");
             }
+         } catch (IOException e) {
+            System.out.println("正在建立连接（坏消息）");
          }
       }
    }

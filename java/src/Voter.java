@@ -81,6 +81,10 @@ public class Voter {
      */
     private void setRadomDec() {
         randomDec = new BigInteger[number];
+        if(number==1){
+            randomDec[0]=decimal;
+            return;
+        }
         BigDecimal bigDecimal[] = new BigDecimal[number - 1]; // 需要number-1个随机数
         for (int i = 0; i < number - 1; i++) { // 生成number-1个随机数
             bigDecimal[i] = new BigDecimal(decimal);
