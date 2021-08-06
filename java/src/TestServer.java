@@ -10,13 +10,13 @@ public class TestServer {
       ServerSocket server = null;
       Socket you = null;
       int number = 0;
-      int numbermax = 2;
+      int numbermax = 3;
       String serverips[];
       serverips = new String[numbermax];
       ServerThread.flag = false;
       while (true) {
          try {
-            server = new ServerSocket(4332);
+            server = new ServerSocket(4333);
          } catch (IOException e1) {
             System.out.println("正在监听"); // ServerSocket对象不能重复创建
          }
@@ -29,14 +29,22 @@ public class TestServer {
          }
          if (you != null) {
             serverips[number] = you.getInetAddress().getHostAddress();
-            new ServerThread(you, number).start(); // 为每个客户启动一个专门的线程
+            new TheServerThread(you, number).start(); // 为每个客户启动一个专门的线程
             number++;
+            System.out.println("number=" + number);
             if (number == numbermax) {
-               ServerThread.flag = true;
-               ServerThread.number = number;
+               TheServerThread.number = number;
                int i = 0;
                for (i = 0; i < number; i++) {
-                  ServerThread.ips[i] = serverips[i];
+                  TheServerThread.ips[i] = serverips[i];
+               }
+               TheServerThread.flag = true;
+               try {
+                  server.close();
+                  System.out.println("任务结束");
+                  return;
+               } catch (Exception e) {
+                  System.out.println("怎么关闭不了？");
                }
             }
          }
@@ -44,7 +52,7 @@ public class TestServer {
    }
 }
 
-class ServerThread extends Thread {
+class TheServerThread extends Thread {
    static int number;
    static String ips[] = new String[100];
    static boolean flag;
@@ -53,7 +61,7 @@ class ServerThread extends Thread {
    DataOutputStream out = null;
    DataInputStream in = null;
 
-   ServerThread(Socket t, int id) {
+   TheServerThread(Socket t, int id) {
       socket = t;
       try {
          out = new DataOutputStream(socket.getOutputStream());
@@ -65,20 +73,25 @@ class ServerThread extends Thread {
 
    public void run() {
       while (true) {
-         try {
-            System.out.println("id为" + id + flag);
-            if (flag == true) {
+         if (flag == true) {
+            try {
                out.writeInt(number);
                out.writeInt(id);
-               for (int i = 0; i < number; i++) {
+                  for (int i = 0; i < number; i++) {
                   out.writeUTF(ips[i]);
-               }
+                  }
+                  return;
+            } catch (IOException e) {
+               System.out.println("客户离开");
                return;
             }
-         } catch (IOException e) {
-            System.out.println("客户离开");
-            return;
          }
+         else{
+            try {
+               Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+         } 
       }
    }
 }

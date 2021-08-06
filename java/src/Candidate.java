@@ -1,4 +1,6 @@
-public class Candidate {
+import java.io.Serializable;
+
+public class Candidate implements Serializable{
     Candidate(int number) {
         this.number = number;
         name = new String[number];
