@@ -20,19 +20,22 @@ public class Voter {
     String receiveMsg[]; // 从其他投票者收到的信息
     int result[]; // 每个候选人的得票数
 
-    public void work(boolean voteMsg[]){
+    public void work(boolean voteMsg[]) {
         digit = (int) (Math.log(number) / Math.log(2)) + 1;// 计算位数
         this.setBinary(voteMsg);
         this.setDecimal();
         this.setRadomDec();
     }
+
     /**
      * 构造函数
      * 
      * @param number    投票者的数目
      * @param candidate 候选人信息
      */
-    public Voter(){}
+    public Voter() {
+    }
+
     public Voter(int number, Candidate candidate, boolean voteMsg[], String ipMsg[]) {
         this.number = number;
         this.candidate = candidate;
@@ -88,8 +91,8 @@ public class Voter {
      */
     private void setRadomDec() {
         randomDec = new BigInteger[number];
-        if(number==1){
-            randomDec[0]=decimal;
+        if (number == 1) {
+            randomDec[0] = decimal;
             return;
         }
         BigDecimal bigDecimal[] = new BigDecimal[number - 1]; // 需要number-1个随机数
@@ -151,7 +154,7 @@ public class Voter {
      */
     public void getResult() {
         BigInteger resultBigInteger = new BigInteger("0");
-        for (int i = 0; i <number; i++) {
+        for (int i = 0; i < number; i++) {
             resultBigInteger = resultBigInteger.add(new BigInteger(receiveMsg[i]));// 对receiveMsg求和
         }
         String resultString = resultBigInteger.toString(2);// 转化为二进制字符串
@@ -212,6 +215,7 @@ public class Voter {
         }
     }
 }
+
 class Receive implements Runnable {// 接听者
     String receiveMsg[];
     BigInteger sendMsg[];
@@ -220,51 +224,51 @@ class Receive implements Runnable {// 接听者
     ServerSocket server = null;
     Socket you = null;
     int num;
- 
+
     Receive(String receiveMsg[], BigInteger sendMsg[], int id, int number) {
-       this.receiveMsg = receiveMsg;
-       this.sendMsg = sendMsg;
-       this.id = id;
-       this.number = number;
-       num=0;
+        this.receiveMsg = receiveMsg;
+        this.sendMsg = sendMsg;
+        this.id = id;
+        this.number = number;
+        num = 0;
     }
- 
+
     public void run() {
-       if (number == 1) {
-          return;
-       }
-       try {
-          server = new ServerSocket(4399+id);
-       } catch (IOException e1) {
-       }
-       id++;
-       communication threads[] = new communication[number - id];
-       while (id < number) {
-          try {
-             you = server.accept();
-          } catch (IOException e) {
-             System.out.println("等待其他人呼叫");
-          }
-          if (you != null) {
-             threads[num] = new communication(you, receiveMsg, sendMsg[id], id, true);
-             threads[num++].start();
-             id++;
-          }
-       }
-       for (num--; num >= 0; num--) {
-          try {
-             threads[num].join();
-          } catch (Exception e) {
-          }
-       }
-       try {
-          server.close();
-       } catch (Exception e) {
-       } // 必须要有
+        if (number == 1) {
+            return;
+        }
+        try {
+            server = new ServerSocket(4399 + id);
+        } catch (IOException e1) {
+        }
+        id++;
+        communication threads[] = new communication[number - id];
+        while (id < number) {
+            try {
+                you = server.accept();
+            } catch (IOException e) {
+                System.out.println("等待其他人呼叫");
+            }
+            if (you != null) {
+                threads[num] = new communication(you, receiveMsg, sendMsg[id], id, true);
+                threads[num++].start();
+                id++;
+            }
+        }
+        for (num--; num >= 0; num--) {
+            try {
+                threads[num].join();
+            } catch (Exception e) {
+            }
+        }
+        try {
+            server.close();
+        } catch (Exception e) {
+        } // 必须要有
     }
- }
- 
- class Send implements Runnable {// 拨打者
+}
+
+class Send implements Runnable {// 拨打者
     Socket socket = null;
     String receiveMsg[];
     BigInteger sendMsg[];
@@ -273,37 +277,38 @@ class Receive implements Runnable {// 接听者
     int id;
     int num = 0;
     String ips[];
- 
+
     Send(String receiveMsg[], BigInteger sendMsg[], int id, String ips[]) {
-       this.receiveMsg = receiveMsg;
-       this.sendMsg = sendMsg;
-       this.id = id;
-       this.ips = ips;
-       num = 0;
+        this.receiveMsg = receiveMsg;
+        this.sendMsg = sendMsg;
+        this.id = id;
+        this.ips = ips;
+        num = 0;
     }
- 
+
     public void run() {
-       communication threads[] = new communication[id];
-       while (num < id) {
-          try {
-             you = new Socket(ips[num], 4399+num);
-          } catch (IOException e) {you=null;
-          }
-          if(you!=null){
-          threads[num] = new communication(you, receiveMsg, sendMsg[num], num, false);
+        communication threads[] = new communication[id];
+        while (num < id) {
+            try {
+                you = new Socket(ips[num], 4399 + num);
+            } catch (IOException e) {
+                you = null;
+            }
+            if (you != null) {
+                threads[num] = new communication(you, receiveMsg, sendMsg[num], num, false);
                 threads[num++].start();
-                }
-       }
-       for (num--; num >= 0; num--) {
-          try {
-             threads[num].join();
-          } catch (Exception e) {
-          }
-       }
+            }
+        }
+        for (num--; num >= 0; num--) {
+            try {
+                threads[num].join();
+            } catch (Exception e) {
+            }
+        }
     }
- }
- 
- class communication extends Thread {
+}
+
+class communication extends Thread {
     String receiveMsg[];
     Socket socket = null;
     DataInputStream in = null;
@@ -311,39 +316,39 @@ class Receive implements Runnable {// 接听者
     BigInteger sendMsg;
     int num = 0;
     boolean choice;
- 
+
     communication(Socket socket, String receiveMsg[], BigInteger sendMsg, int num, boolean choice) {
-       this.socket = socket;
-       this.receiveMsg = receiveMsg;
-       this.sendMsg = sendMsg;
-       this.num = num;
-       this.choice = choice;
-       try {
-          in = new DataInputStream(socket.getInputStream());
-          out = new DataOutputStream(socket.getOutputStream());
-       } catch (IOException e) {
-       }
+        this.socket = socket;
+        this.receiveMsg = receiveMsg;
+        this.sendMsg = sendMsg;
+        this.num = num;
+        this.choice = choice;
+        try {
+            in = new DataInputStream(socket.getInputStream());
+            out = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+        }
     }
- 
+
     public void run() {
-       if (choice == false) {
-          try {
-             out.writeUTF(sendMsg.toString());
-             receiveMsg[num] = in.readUTF();
-             socket.close();
-             return;
-          } catch (IOException e) {
-             System.out.println("正在建立连接（坏消息）+1");
-          }
-       } else if (choice == true) {
-          try {
+        if (choice == false) {
+            try {
+                out.writeUTF(sendMsg.toString());
+                receiveMsg[num] = in.readUTF();
+                socket.close();
+                return;
+            } catch (IOException e) {
+                System.out.println("正在建立连接（坏消息）+1");
+            }
+        } else if (choice == true) {
+            try {
                 receiveMsg[num] = in.readUTF();
                 out.writeUTF(sendMsg.toString());
                 socket.close();
                 return;
-          } catch (IOException e) {
-             System.out.println("正在建立连接（坏消息）");
-          }
-       }
+            } catch (IOException e) {
+                System.out.println("正在建立连接（坏消息）");
+            }
+        }
     }
- }
+}

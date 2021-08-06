@@ -51,14 +51,13 @@ public class Testclient {
       thread.join();
       thread2.join();
       System.out.println("第一次数据传输完成");
-      for(i=0;i<number;i++)
-      {
-         System.out.println("收到信息的第"+i+"个"+receiveMsg[i]);
+      for (i = 0; i < number; i++) {
+         System.out.println("收到信息的第" + i + "个" + receiveMsg[i]);
       }
       for (i = 0; i < number; i++) {
          sum = sum.add(new BigInteger(receiveMsg[i]));
       }
-      System.out.println("我的计票结果是："+sum);
+      System.out.println("我的计票结果是：" + sum);
       receiveMsg2 = new String[number];
       receiveMsg2[id] = sum.toString();
       sendMsg2 = new BigInteger[number];
@@ -75,15 +74,13 @@ public class Testclient {
       thread4.join();
       System.out.println("第三阶段完成（吃苹果）");
       me.receiveMsg = receiveMsg2;
-      for(i=0;i<number;i++)
-      {
-         System.out.println("收到信息的第"+i+"个"+me.receiveMsg[i]);
+      for (i = 0; i < number; i++) {
+         System.out.println("收到信息的第" + i + "个" + me.receiveMsg[i]);
       }
       System.out.println("有几位投票人？" + me.number);
       me.getResult();
-      for(i=0;i<candidate.number;i++)
-      {
-         System.out.println("候选人"+i+"的票数:"+me.result[i]);
+      for (i = 0; i < candidate.number; i++) {
+         System.out.println("候选人" + i + "的票数:" + me.result[i]);
       }
    }
 }

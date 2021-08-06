@@ -77,21 +77,20 @@ class TheServerThread extends Thread {
             try {
                out.writeInt(number);
                out.writeInt(id);
-                  for (int i = 0; i < number; i++) {
+               for (int i = 0; i < number; i++) {
                   out.writeUTF(ips[i]);
-                  }
-                  return;
+               }
+               return;
             } catch (IOException e) {
                System.out.println("客户离开");
                return;
             }
-         }
-         else{
+         } else {
             try {
                Thread.sleep(1000);
             } catch (InterruptedException e) {
             }
-         } 
+         }
       }
    }
 }

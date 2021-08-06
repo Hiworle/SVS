@@ -24,7 +24,8 @@ public class Server extends Thread {
         while (true) {
             try {
                 server = new ServerSocket(4332);
-            } catch (IOException e1) {}
+            } catch (IOException e1) {
+            }
             try {
                 you = server.accept();
             } catch (IOException e) {
