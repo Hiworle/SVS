@@ -24,12 +24,13 @@ public class Client {
       System.out.println("输入0则发起投票，输入1则加入投票");
       Scanner reader = new Scanner(System.in);
       choice=reader.nextInt();
-      reader.close();
       if(choice==0){
-          int number=3;
+          System.out.println("有几个小伙伴来投票？");
+          me.number=reader.nextInt();
+          System.out.println("正式使用时，请让你的小伙伴输入："+InetAddress.getLocalHost().getHostAddress());
           Serverip=InetAddress.getLocalHost().getHostAddress();
           Candidate candidate=new Candidate(3);//设置候选人信息；
-          new Server(candidate,number).start();
+          new Server(candidate,me.number).start();
         }
       else if(choice==1){
          Serverip=InetAddress.getLocalHost().getHostAddress();
@@ -37,10 +38,12 @@ public class Client {
 
       else{
           System.out.println("退出了？好");
+          reader.close();
           return;
       }
+      reader.close();
           try {
-               System.out.println("正在呼叫服务器");
+               System.out.println("等待所有人加入投票中");
                mysocket = new Socket(Serverip, 4332);
                in = new DataInputStream(mysocket.getInputStream());
                in2=new ObjectInputStream(mysocket.getInputStream());
