@@ -6,9 +6,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 //测试用客户端
-public class Client {
+public class Client{
    public static void main(String[] args) throws Exception {
-      int choice = 0;
+      String choice;
       String Serverip = null;
       Socket mysocket;
       DataInputStream in = null;
@@ -23,26 +23,35 @@ public class Client {
       // 获取所有投票者的ip地址
       System.out.println("输入0则发起投票，输入1则加入投票");
       Scanner reader = new Scanner(System.in);
-      choice = reader.nextInt();
-      if (choice == 0) {
+      choice = reader.nextLine();
+      if (choice.equals("0")) {
          System.out.println("有几个小伙伴来投票？");
          me.number = reader.nextInt();
+         System.out.println("设置候选人信息");
+         System.out.print("候选人人数：");
+         Candidate candidate = new Candidate(reader.nextInt());// 设置候选人信息；
+         reader.nextLine();
+         for(i=0;i<candidate.number;i++)
+         {
+            System.out.print("候选人"+i+"的名字：");
+            candidate.name[i]=reader.nextLine();
+            System.out.print("候选人"+i+"的个人信息：");
+            candidate.msg[i]=reader.nextLine();
+         }
+         System.out.println("设置完成");
          System.out.println("正式使用时，请让你的小伙伴输入：" + InetAddress.getLocalHost().getHostAddress());
          Serverip = InetAddress.getLocalHost().getHostAddress();
-         Candidate candidate = new Candidate(3);// 设置候选人信息；
          new Server(candidate, me.number).start();
-      } else if (choice == 1) {
-         Serverip = InetAddress.getLocalHost().getHostAddress();
-      }
-
-      else {
+      } else if (choice.equals("1")) {
+         System.out.println("输入验证信息");
+         Serverip = reader.nextLine();
+      } else {
          System.out.println("退出了？好");
          reader.close();
          return;
       }
-      reader.close();
       try {
-         System.out.println("等待所有人加入投票中");
+         System.out.println("等待所有人加入投票中....");
          mysocket = new Socket(Serverip, 4332);
          in = new DataInputStream(mysocket.getInputStream());
          in2 = new ObjectInputStream(mysocket.getInputStream());
@@ -56,8 +65,24 @@ public class Client {
       } catch (Exception e) {
          System.out.println("未知错误222" + e);
       }
+      for(i=0;i<me.candidate.number;i++)
+      {
+         System.out.print("候选人"+i+"名字"+me.candidate.name[i]);
+         System.out.println("相关信息"+me.candidate.msg[i]);
+      }
       System.out.println("我是第" + me.id + "位投票者");
-      boolean voteMsg[] = new boolean[] { true, false, true };
+      System.out.println("设置你神圣的选票吧！（按1或true表示投该位候选人，其他输入则视为不投）");
+      String vote;
+      boolean voteMsg[]=new boolean[me.candidate.number];
+      for(i=0;i<me.candidate.number;i++)
+      {
+       System.out.print("候选人"+i+"的选择是：");
+       vote=reader.nextLine();
+       if(vote.equals("1")||vote.equals("true"))voteMsg[i]=true;
+       else voteMsg[i]=false;
+   }
+      System.out.println("等待其他人完成投票...");
+      reader.close();
       me.work(voteMsg);
       receiveMsg = new String[me.number];
       receiveMsg[me.id] = me.randomDec[me.id].toString();
