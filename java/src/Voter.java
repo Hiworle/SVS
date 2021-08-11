@@ -131,14 +131,20 @@ public class Voter {
         if (MOD != 0) {
             subString = s.substring(0, MOD);
             group[0] = Integer.parseInt(subString, 2);// 有余数，把0到MOD位的二进制数转到group[0]
+
+            if (k > 1) {// k = 1 时直接结束
+                for (int i = 1; i < k; i++) {
+                    subString = s.substring(MOD + (i - 1) * digit, MOD + i * digit);
+                    group[i] = Integer.parseInt(subString, 2);// 把MOD位之后每digit位转到group
+                }
+            }
         } else {
-            subString = s.substring(0, digit);
-            group[0] = Integer.parseInt(subString, 2);// 没余数，直接把前n位转到group[0]
+            for (int i = 0; i < k; i++) {
+                subString = s.substring(i * digit, (i + 1) * digit);
+                group[i] = Integer.parseInt(subString, 2);// 没余数，直接每digit位转到group中
+            }
         }
-        for (int i = 1; i < k; i++) {
-            subString = s.substring(i * digit, (i + 1) * digit);
-            group[i] = Integer.parseInt(subString, 2);// 接下来每n位转到group[i]中
-        }
+
         return group;
     }
 
