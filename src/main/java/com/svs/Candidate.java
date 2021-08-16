@@ -1,3 +1,4 @@
+package com.svs;
 import java.io.Serializable;
 
 public class Candidate implements Serializable {
