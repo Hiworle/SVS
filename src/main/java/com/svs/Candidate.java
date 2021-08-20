@@ -1,8 +1,9 @@
 package com.svs;
+
 import java.io.Serializable;
 
 public class Candidate implements Serializable {
-    Candidate(int number) {
+    public Candidate(int number) {
         this.number = number;
         name = new String[number];
         msg = new String[500]; // 应该规定每个msg的最大长度为500
