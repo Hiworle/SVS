@@ -1,4 +1,5 @@
 package com.svs;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Voter {
     BigInteger decimal; // 十进制选票信息
     BigInteger randomDec[]; // 十进制选票信息随机分成number份
     String receiveMsg[]; // 从其他投票者收到的信息
-    int result[]; // 每个候选人的得票数
+    public int result[]; // 每个候选人的得票数
 
     public void work(boolean voteMsg[]) {
         digit = (int) (Math.log(number) / Math.log(2)) + 1;// 计算位数
@@ -119,6 +120,7 @@ public class Voter {
      * @return 返回int型的含有k个数的数组
      */
     public int[] divideGroup(String s, int digit) {
+        // TODO 发现了一个分组的bug，即第一组全为零时
         int k; // k是分成的组数
         int MOD = s.length() % digit;// MOD是分组的余数
         if (MOD == 0) {
