@@ -3,7 +3,7 @@ package com.svs;
 /**
  * 用来获取格式化处理文本
  */
-public class Formater {
+public class Formatter {
 
     /**
      * 创建
@@ -30,8 +30,8 @@ public class Formater {
      * @param voteMsg 投票信息
      * @return 返回加入用格式文本
      */
-    public static String toJoin(String voteMsg[]) {
-        String result = "1\n";
+    public static String toJoin(String idCode, String voteMsg[]) {
+        String result = "1\n" + idCode + "\n";
         for (String str : voteMsg) {
             result = result.concat(str + "\n");
         }

@@ -9,8 +9,9 @@ public class App {
         candidate.name[1] = "Bob";
         candidate.name[2] = "Cat";
         String voteMsg[] = { "1", "0", "1" };
+        String idCode = "192.168.0.100";
 
-        String in = Formater.toCreate("1", candidate, voteMsg);
+        String in = Formatter.toCreate("1", candidate, voteMsg);
         try {
             MyClient.run(in);
         } catch (Exception e) {
