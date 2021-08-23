@@ -33,20 +33,20 @@ public class UserController {
      * @throws InterruptedException
      */
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String creat(
-    // @RequestParam(value = "candidate-number") int cddNumber,
-    // @RequestParam(value = "candidate-name") String[] cddName,
-    // @RequestParam(value = "candidate-msg") String[] cddMsg,
-    // @RequestParam(value = "voter-number") int voterNumber, @RequestParam(value =
-    // "vote-msg") String voteMsg[]
-    ) {
+    public String creat(@RequestParam(value = "candidateNumber") int cddNumber,
+            @RequestParam(value = "candidateName") String[] cddName,
+            @RequestParam(value = "candidateMsg") String[] cddMsg, @RequestParam(value = "voterNumber") int voterNumber,
+            @RequestParam(value = "voteMsg") String voteMsg[]) {
 
-        int cddNumber = 3;
-        int voterNumber = 2;
+        // int cddNumber = 3;
+        // int voterNumber = 2;
+        // Candidate candidate = new Candidate(cddNumber);
+        // candidate.setName(new String[] { "Alice", "Bob", "Cat" });
+        // candidate.setMsg(new String[] { "Alice msg", "Bob msg", "Cat msg" });
+        // String[] voteMsg = { "1", "1", "0" };
         Candidate candidate = new Candidate(cddNumber);
-        candidate.setName(new String[] { "Alice", "Bob", "Cat" });
-        candidate.setMsg(new String[] { "Alice msg", "Bob msg", "Cat msg" });
-        String[] voteMsg = { "1", "1", "0" };
+        candidate.setName(cddName);
+        candidate.setMsg(cddMsg);
 
         RunnableCreate runnableCreate = new RunnableCreate(cddNumber, voterNumber, candidate, voteMsg);
         runnableCreate.start();
@@ -76,13 +76,11 @@ public class UserController {
      * @return 投票结果
      */
     @RequestMapping(value = "/join", method = RequestMethod.GET)
-    public String join(
-    // @RequestParam(value = "id-code", required = true) String idCode,
-    // @RequestParam(value = "vote-msg") String voteMsg[]
-    ) {
+    public String join(@RequestParam(value = "idCode", required = true) String idCode,
+            @RequestParam(value = "voteMsg") String voteMsg[]) {
         int[] result = null;
-        String idCode = "192.168.0.100";
-        String[] voteMsg = { "0", "0", "1" };
+        // String idCode = "192.168.0.100";
+        // String[] voteMsg = { "0", "0", "1" };
 
         String in = Formatter.toJoin(idCode, voteMsg);
 
