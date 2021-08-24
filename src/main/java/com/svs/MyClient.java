@@ -45,11 +45,19 @@ public class MyClient {
          System.out.println("============================================");
 
          System.out.println("正式使用时，请让你的小伙伴输入：" + InetAddress.getLocalHost().getHostAddress());
-         Serverip = InetAddress.getLocalHost().getHostAddress();
          new Server(candidate, me.number).start();
-      } else if (choice.equals("1")) {
-         System.out.println("输入验证信息");
-         Serverip = reader.nextLine();
+         System.out.println("你是否想加入这次投票？按1视为加入，其他选项视为退出");
+         choice = reader.nextLine();
+         if (choice.equals("1")) {
+            Serverip = InetAddress.getLocalHost().getHostAddress();
+         }
+      }
+      
+      if (choice.equals("1")) {
+         if (Serverip == null) {
+            System.out.println("输入验证信息");
+            Serverip = reader.nextLine();
+         }
       } else {
          System.out.println("退出了？好");
          reader.close();
