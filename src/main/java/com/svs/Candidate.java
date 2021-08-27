@@ -1,6 +1,9 @@
 package com.svs;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Candidate implements Serializable {
     public Candidate(int number) {
@@ -26,5 +29,21 @@ public class Candidate implements Serializable {
 
     public void setMsg(String msg[]) {
         this.msg = msg;
+    }
+
+    // 重写toString
+    public String toString() {
+        return "{ number: " + this.number + ", name: " + Arrays.toString(this.name) + ", msg: " + Arrays.toString(msg);
+    }
+
+    // 返回键值对形式
+    public Object toObj() {
+        Map<String, Object> obj = new HashMap<String, Object>();
+
+        obj.put("number", this.number);
+        obj.put("name", this.msg);
+        obj.put("msg", this.msg);
+
+        return obj;
     }
 }
