@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script type="text/javascript">
+			document.write('<script src="../../js/fix.js?rd=?rd=' + Math.random() + '"><\/script>');
+		</script>
+		<script type="text/javascript">
+			link(['../../css/reset.css']);
+		</script>
+		<script src="../../js/jquery.min.js"></script>
+	</head>
+
+	<body class="bg-fff">
+		<header class="mui-bar mui-bar-nav">
+			<a href="../tool/vote_start.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">SVS</h1>
+		</header>
+		<div class="mui-content mui-scroll-wrapper scroll">
+			<div class="mui-scroll">
+				<div class="m1rem">
+					<div class="input-group">
+						<div class="mui-input-row">
+							<input id='pwd' type="password" class="mui-input-clear mui-input bor-no bgc-f2" maxlength="6" placeholder="请输入您的验证码">
+						</div>
+					</div>
+					<div>
+						<a href="../tool/vote_people.html"><button id='btn_ok' class="mui-btn mui-btn-block btn-ok">提交</button></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			//必须顺序加载
+			script(['../../js/login/setPwd.js']);
+			$('#btn_ok').click(function () {
+			      var password = $('#pwd').val();
+			      $.ajax({
+			               url: 'https://api.apiopen.top/developerLogin',
+			               dataType: 'json',
+			               type: 'post',
+			               data{
+			                            passwd: password,
+			                        },
+			               success: function (data){        
+			                        switch(data.code){
+			                                case 200:
+			                                alert(data.message);
+			                                window.location.href='ajax_news.html';
+			                                break;
+			                                case 400:
+			                                alert(data.message);
+			                                break;
+			                                      }
+			                        },
+			               error: function (data) {
+			                           
+			                        }
+			                    })
+			                })
+			$('#btn_ok').click(function () {
+			        window.location.href='vote_people.html';     
+			            })
+		</script>
+	</body>
+
+</html>

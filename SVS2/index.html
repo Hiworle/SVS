@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<a href="html/tool/vote_start.html"><button class="mui-btn mui-btn-block btn-ok" id='btn_start'>开始测试</button></a>
+	<a href="#"><button class="mui-btn mui-btn-block btn-ok" id='btn_create'>创建测试</button></a>
+	<a href="#"><button class="mui-btn mui-btn-block btn-ok" id='btn_join'>加入测试</button></a>
+		<a href="#"><button class="mui-btn mui-btn-block btn-ok" id='btn_candi'>获取候选人</button></a>
+	<script type="text/javascript">
+		$('#btn_create').click(function () {
+					      // var username = $('#uname').val();
+					      // var password = $('#upass').val();
+					      var local = 'http://10.250.151.69:8080/';// lacal存本机ip（局域网）,端口号8080
+						  
+						  // 这一块需要用户输入
+						  var candidatenumber = 3;
+						  var candidatename = ['Alice','Bob','Carol'];
+						  var candidatemsg = ['IamA','IamB','IamC'];
+						  var voternumber = 1;
+						  var votemsg = ['1','1','1'];
+						  
+						  $.ajax({
+					               url: local + '/create',// 使用/create映射
+					               dataType: 'json',
+								   traditional: true,
+					               type: 'get',
+					               data: {
+												candidateNumber: candidatenumber,
+												candidateName: candidatename,
+												candidateMsg: candidatemsg,
+												voterNumber: voternumber,
+												voteMsg: votemsg,
+					                        },
+					               success: function (data){        // 这里的data是接收到后端的信息，目前指投票结果
+					                                alert(data);
+					                        },
+					               error: function (data) {
+					                           alert("error"+data);
+					                        }
+					                    })
+					                })
+	</script>
+	<script type="text/javascript">
+		$('#btn_join').click(function () {
+					      // var username = $('#uname').val();
+					      // var password = $('#upass').val();
+					      var local = 'http://10.250.151.69:8080';// lacal存本机ip（局域网）,端口号8080
+						  
+						  // 这一块需要用户输入
+						  var idCode = '10.250.151.69';// 这个是验证码
+						  var voteMsg = ['1','1','0'];
+						  
+						  $.ajax({
+					               url:  local +'/join',
+					               dataType: 'json',
+								   traditional: true,
+					               type: 'get',
+					               data: {
+												idCode: idCode,
+												voteMsg: voteMsg,
+					                            // passwd: password,
+					                        },
+					               success: function (data){        // 这里的data是接收到后端的信息，目前指投票结果
+					                                alert(data);
+					                        },
+					               error: function (data) {
+					                           alert("error: "+data);
+					                        }
+					                    })
+					                })
+	</script>
+		<script type="text/javascript">
+			$('#btn_candi').click(function () {
+				  var idCode = '10.250.151.69';// 这个是验证码（由用户输入）
+				  
+				  $.ajax({
+						   url:  'http://' + idCode +':8080/candidatemsg',// 默认用8080端口
+						   dataType: 'json',
+						   traditional: true,
+						   type: 'get',
+						   // data: {}, 不用传信息
+						   success: function (data){        // 这里的data是接收到后端的信息，这里是候选人信息
+											alert("Candi success:" + JSON.stringify(data));
+									},
+						   error: function (data) {
+									   alert("Candi error: "+JSON.stringify(data));
+									}
+								})
+							})
+		</script>
+</body>
+</html>

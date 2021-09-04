@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script type="text/javascript">
+			document.write('<script src="../../js/fix.js?rd=?rd=' + Math.random() + '"><\/script>');
+		</script>
+		<script type="text/javascript">
+			link(['../../css/tool/oneCardSearch.css', '../../css/tool/cardSelect.css']);
+		</script>
+		<script src="../../js/jquery.min.js"></script>
+	</head>
+
+	<body>
+		<form>
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">发起投票</h1>
+			</header>
+			<div class="mui-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll list">
+						<div class="group">
+							<h5>投票标题</h5>
+							<input type="text" name="voteName" id="voteName" placeholder="投票标题，如：班上最漂亮的女生是哪一位？" />
+							<span class="iconfont icon-edit" id="biaoti" style="top: 45px;"></span>
+						</div>
+						<div class="group">
+							<h5>参与人数</h5>
+							<input type="text" name="number" id="number" placeholder="参与人数" />
+							<span class="iconfont icon-edit" id="canyurenshu" style="top: 45px;"></span>
+						</div>
+						<div class="group" id="houxuan">
+							<h5>候选人</h5>
+							<span class="iconfont icon-edit" id="houxuanren" style="top: 45px;"></span>
+							<input type="text" name="candiname" id="candiname" placeholder="候选人输入完成后回车输入另一个人" />
+						</div>
+						<button onclick="add()"><span class="mui-icon mui-icon-plus" ></span></button>
+						<button onclick="del()"><span class="mui-icon mui-icon-minus" ></span></button>
+						<div class="group kind" id="tap">
+							<h5 style="border: none;">投票列表</h5>
+							<!--数据区-->
+						</div>
+					</div>
+				</div>
+				<input type="submit"/><a href="../login/vote_code.html"><div class="search mui-text-center" id="searchBtn">提交</div></a>
+			</div>
+		</form>
+		<script type="text/html" id="tapTep1">
+			{{each CardGroupTag as value}}
+			<span data-id="{{value.tagId}}">{{value.tagName}}</span> {{/each}}
+			<hr />
+		</script>
+		<script type="text/javascript">
+			script(['../../js/tool/cardSelect.js']);
+			
+			$('#searchBtn').click(function () {
+			      var vote = $('#voteName').val();
+				  var Number = $('#number').val();
+				  var candidate = $('#candiname').val();
+				  
+			      $.ajax({
+			               url: 'https://api.apiopen.top/developerLogin',
+			               dataType: 'json',
+			               type: 'post',
+			               data{
+			                            title: vote,
+										amounts: Number,
+										candiName: candidate
+			                        },
+			               success: function (data){        
+			                        switch(data.code){
+			                                case 200:
+			                                alert(data.message);
+			                                window.location.href='ajax_news.html';
+			                                break;
+			                                case 400:
+			                                alert(data.message);
+			                                break;
+			                                      }
+			                        },
+			               error: function (data) {
+			                           
+			                        }
+			                    })
+			                })
+			$('#btn_ok').click(function () {
+			        window.location.href='vote_code.html';     
+			            })
+			var times=1;			
+			function add()
+			{
+				document.getElementById("houxuan").innerHTML+="<span class="iconfont icon-edit" id="houxuanren"+times style="top: 45px;"></span>
+							<input type="text" name="candiname" id="candiname"+times placeholder="候选人输入完成后回车输入另一个人" />";
+				times++;
+			}
+			function del()
+			{
+				var div=document.getElementById("houxuan");
+				div.removeChild(div.lastElementChild);
+			}
+			
+			function addone()
+			{
+				//添加行
+				var i=canditable.rows.length;
+				var spanId = "span"+i;
+				var inputId ="candiname"+i;
+				var delId = "btnDelete"+i;
+				var newTr = canditable.insertRow();
+				
+				//添加列
+				var spanTd = newTr.insertCell();
+				var inputTd = newTr.insertCell();
+				var delTd = newTr.insertCell();
+				
+				//设置
+				/* spanTd.innerHTML = '<input id="'+ spanId +'" type = "span" class="iconfont icon-edit" style="top: 45px;"/>';
+				inputTd.innerHTML = '<input id="'+inputId+''" type="input" name="candiname" placeholder="候选人输入完成后回车输入另一个人">';
+				delTd.innerHTML = '<input id="'+ delId +'" type = "span" class="mui-icon mui-icon-minus" onclick="del()"/>'; */
+				spanTd.innerHTML = <span class="iconfont icon-edit" id=spanId style="top: 45px;"></span>;
+				inputTd.innerHTML = <input type="text" name="candiname" id=inputId placeholder="候选人输入完成后回车输入另一个人" />;
+				delTd.innerHTML = <button onclick="del()"><span class="mui-icon mui-icon-minus" id=delId ></span></button>;
+			}
+			
+			function delone()
+			{
+				var getRow = window.event.srcElement.parentElement.parentElement.rowIndex;
+				categoryTable.deleteRow(getRow);
+			}			
+		</script>
+	</body>
+
+</html>
