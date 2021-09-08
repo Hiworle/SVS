@@ -13,14 +13,14 @@ public class Formatter {
      * @param voteMsg[]   投票信息
      * @return 返回创建用格式文本
      */
-    public static String toCreate(String voterNumber, Candidate candidate, String voteMsg[]) {
+    public static String toCreate(String voterNumber, Candidate candidate) {
         String result = "0\n" + voterNumber + "\n" + candidate.number + "\n";// 创建模式
         for (int i = 0; i < candidate.number; i++) {
             result = result.concat(candidate.name[i] + "\n" + candidate.msg[i] + "\n");
         }
-        for (String str : voteMsg) {
-            result = result.concat(str + "\n");
-        }
+        // for (String str : voteMsg) {
+        //     result = result.concat(str + "\n");
+        // }
         return result;
     }
 
