@@ -96,10 +96,6 @@ public class Client{
       thread2.start();
       thread.join();
       thread2.join();
-      System.out.println("第一次数据传输完成");
-      for (i = 0; i < me.number; i++) {
-         System.out.println("收到信息的第" + i + "个" + receiveMsg[i]);
-      }
       for (i = 0; i < me.number; i++) {
          sum = sum.add(new BigInteger(receiveMsg[i]));
       }
@@ -118,12 +114,7 @@ public class Client{
       thread4.start();
       thread3.join();
       thread4.join();
-      System.out.println("第三阶段完成（吃苹果）");
       me.receiveMsg = receiveMsg2;
-      for (i = 0; i < me.number; i++) {
-         System.out.println("收到信息的第" + i + "个" + me.receiveMsg[i]);
-      }
-      System.out.println("有几位投票人？" + me.number);
       me.getResult();
       for (i = 0; i < me.candidate.number; i++) {
          System.out.println("候选人" + i + "的票数:" + me.result[i]);

@@ -8,7 +8,12 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+
+import org.apache.tomcat.jni.Local;
 
 public class Voter {
     int id; // 投票者的编号
@@ -343,7 +348,8 @@ class communication extends Thread {
         if (choice == false) {
             try {
                 out.writeUTF(sendMsg.toString());
-                receiveMsg[num] = in.readUTF();
+                receiveMsg[num] = in.readUTF(); 
+                System.out.println(LocalDateTime.now()+"接受到来自"+"编号为"+num+" ip为"+socket.getInetAddress().getHostAddress()+"发送的随机数信息"+receiveMsg[num]+"并返回其"+sendMsg);
                 socket.close();
                 return;
             } catch (IOException e) {
@@ -353,6 +359,7 @@ class communication extends Thread {
             try {
                 receiveMsg[num] = in.readUTF();
                 out.writeUTF(sendMsg.toString());
+                System.out.println(LocalDateTime.now()+"接受到来自"+"编号为"+num+" ip为"+socket.getInetAddress().getHostAddress()+"发送的随机数信息"+receiveMsg[num]+"并返回其"+sendMsg);
                 socket.close();
                 return;
             } catch (IOException e) {

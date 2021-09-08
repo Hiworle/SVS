@@ -37,9 +37,11 @@ public class UserController {
      * @throws InterruptedException
      */
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String creat(@RequestParam(value = "candidateNumber") int cddNumber,
+    public String creat(
+        @RequestParam(value = "candidateNumber") int cddNumber,
             @RequestParam(value = "candidateName") String[] cddName,
-            @RequestParam(value = "candidateMsg") String[] cddMsg, @RequestParam(value = "voterNumber") int voterNumber,
+            @RequestParam(value = "candidateMsg") String[] cddMsg, 
+            @RequestParam(value = "voterNumber") int voterNumber,
             @RequestParam(value = "voteMsg") String voteMsg[]) {
 
         // int cddNumber = 3;
@@ -53,6 +55,8 @@ public class UserController {
         candidate.setMsg(cddMsg);
 
         UserController.candidate = candidate; // 保存候选人信息
+
+System.out.println(Arrays.toString(cddName));
 
         RunnableCreate runnableCreate = new RunnableCreate(cddNumber, voterNumber, candidate, voteMsg);
         runnableCreate.start();

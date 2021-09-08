@@ -29,6 +29,7 @@ public class TestServer {
             System.out.println("正在等待客户");
          }
          if (you != null) {
+            System.out.println("投票者加入人数："+Math.addExact(number, 1)+"/"+numbermax);
             serverips[number] = you.getInetAddress().getHostAddress();
             new TheServerThread(you, number).start(); // 为每个客户启动一个专门的线程
             number++;
