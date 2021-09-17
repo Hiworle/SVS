@@ -9,7 +9,7 @@ public class Candidate implements Serializable {
     public Candidate(int number) {
         this.number = number;
         name = new String[number];
-        msg = new String[500]; // 应该规定每个msg的最大长度为500
+        msg = new String[number]; // 应该规定每个msg的最大长度为500
     }
 
     Candidate() {
@@ -33,7 +33,8 @@ public class Candidate implements Serializable {
 
     // 重写toString
     public String toString() {
-        return "{ number: " + this.number + ", name: " + Arrays.toString(this.name) + ", msg: " + Arrays.toString(msg);
+        return "{ number: " + this.number + ", name: " + Arrays.toString(this.name) + ", msg: " + Arrays.toString(msg)
+                + " }";
     }
 
     // 返回键值对形式

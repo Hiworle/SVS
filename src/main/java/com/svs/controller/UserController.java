@@ -31,6 +31,7 @@ public class UserController {
     public static int result[] = null;// 储存结果
     public static Candidate candidate = null; // 在这里储存candidate信息，供投票者调取
     public static String title = null; // 投票标题
+
     /**
      * 映射到/create，用于创建
      * 
@@ -45,11 +46,11 @@ public class UserController {
      * @throws InterruptedException
      */
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String creat(
-        @RequestParam(value = "candidateNumber") int cddNumber,
+    public String creat(@RequestParam(value = "candidateNumber") int cddNumber,
             @RequestParam(value = "candidateName") String[] cddName,
             @RequestParam(value = "candidateMsg") String[] cddMsg, @RequestParam(value = "voterNumber") int voterNumber,
-            @RequestParam(value = "title")String title) throws UnknownHostException, SocketException {
+            @RequestParam(value = "title") String title, HttpServletRequest request)
+            throws UnknownHostException, SocketException {
 
         // int cddNumber = 3;
         // int voterNumber = 2;
@@ -59,6 +60,21 @@ public class UserController {
         Candidate candidate = new Candidate(cddNumber);
         candidate.setName(cddName);
         candidate.setMsg(cddMsg);
+
+        // 获取客户端ip地址
+        String ip = null;// 客户端ip地址
+        ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+
+        Formatter.log("收到来自" + ip + "的创建请求...");
 
         UserController.candidate = candidate; // 保存候选人信息
         UserController.title = title;
@@ -74,6 +90,7 @@ public class UserController {
         String idCode = AddressUtils.getInnetIp(); // 获取本地ip
         System.out.println(idCode);
 
+        Formatter.log("已返回验证码: " + idCode + " 给 " + ip);
         return idCode; // 返回验证码
     }
 
@@ -137,7 +154,6 @@ public class UserController {
         }
     }
 
-
     /**
      * 映射到/titlemsg
      * 
@@ -167,8 +183,7 @@ public class UserController {
             System.out.println("[" + sdf.format(date) + "] 标题信息为空，已返回 null 给 " + ip);
             return null;
         } else {
-            System.out.println("[" + sdf.format(date) + "] 已返回 " + title
-                    + " 给 " + ip);
+            System.out.println("[" + sdf.format(date) + "] 已返回 " + title + " 给 " + ip);
             return title;
         }
     }

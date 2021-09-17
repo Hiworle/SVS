@@ -1,5 +1,8 @@
 package com.svs;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * 用来获取格式化处理文本
  */
@@ -19,7 +22,7 @@ public class Formatter {
             result = result.concat(candidate.name[i] + "\n" + candidate.msg[i] + "\n");
         }
         // for (String str : voteMsg) {
-        //     result = result.concat(str + "\n");
+        // result = result.concat(str + "\n");
         // }
         return result;
     }
@@ -36,5 +39,12 @@ public class Formatter {
             result = result.concat(str + "\n");
         }
         return result;
+    }
+
+    public static void log(String msg) {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss.SSS");
+
+        System.out.println("[" + sdf.format(date) + "] " + msg);
     }
 }
