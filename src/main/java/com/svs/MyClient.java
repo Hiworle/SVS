@@ -149,7 +149,7 @@ public class MyClient {
          // System.out.println("============================================");
          Formatter.log("第三阶段完成（吃苹果）");
          me.receiveMsg = receiveMsg2;
-         Formatter.log("第一次收到的信息: " + Arrays.toString(me.receiveMsg));
+         Formatter.log("第二次收到的信息: " + Arrays.toString(me.receiveMsg));
          // for (i = 0; i < me.number; i++) {
          // System.out.println("收到信息的第" + i + "个" + me.receiveMsg[i]);
          // }
