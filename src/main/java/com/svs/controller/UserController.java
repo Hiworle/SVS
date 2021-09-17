@@ -88,7 +88,7 @@ public class UserController {
         // e.printStackTrace();
         // }
         String idCode = AddressUtils.getInnetIp(); // 获取本地ip
-        System.out.println(idCode);
+        // System.out.println(idCode);
 
         Formatter.log("已返回验证码: " + idCode + " 给 " + ip);
         return idCode; // 返回验证码
