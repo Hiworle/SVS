@@ -1,4 +1,5 @@
 package com.svs;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -33,7 +34,12 @@ public class Server extends Thread {
                 System.out.println("正在等待其他投票者(估计等不到了)");
             }
             if (you != null) {
+<<<<<<< HEAD
                 System.out.println("投票者加入人数："+Math.addExact(number,1)+"/"+numbermax);
+=======
+                Formatter.log("投票者加入人数：" + (number + 1) + "/" + numbermax);
+                // System.out.println("投票者加入人数："+number+"/"+numbermax);
+>>>>>>> 26c9268a9ead36509817c5db7b776e3b159a22a0
                 serverips[number] = you.getInetAddress().getHostAddress();
                 new ServerThread(you, number, candidate).start(); // 为每个客户启动一个专门的线程
                 number++;
@@ -46,10 +52,12 @@ public class Server extends Thread {
                     ServerThread.flag = true;
                     try {
                         server.close();
-                        System.out.println("所有人到齐了！");
+                        // System.out.println("所有人到齐了！");
+                        Formatter.log("所有人都到齐了！");
                         return;
                     } catch (Exception e) {
-                        System.out.println("怎么关闭不了？");
+                        // System.out.println("怎么关闭不了？");
+                        Formatter.log("怎么关闭不了？");
                     }
                 }
             }
