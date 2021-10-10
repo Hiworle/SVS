@@ -42,7 +42,7 @@ public class Candidate implements Serializable {
         Map<String, Object> obj = new HashMap<String, Object>();
 
         obj.put("number", this.number);
-        obj.put("name", this.msg);
+        obj.put("name", this.name);
         obj.put("msg", this.msg);
 
         return obj;
