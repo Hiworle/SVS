@@ -1,4 +1,5 @@
 package com.svs;
+
 import java.io.DataInputStream;
 import java.io.ObjectInputStream;
 import java.math.BigInteger;
@@ -7,7 +8,7 @@ import java.net.Socket;
 import java.util.Scanner;
 
 //测试用客户端
-public class Client{
+public class Client {
    public static void main(String[] args) throws Exception {
       String choice;
       String Serverip = null;
@@ -32,12 +33,11 @@ public class Client{
          System.out.print("候选人人数：");
          Candidate candidate = new Candidate(reader.nextInt());// 设置候选人信息；
          reader.nextLine();
-         for(i=0;i<candidate.number;i++)
-         {
-            System.out.print("候选人"+i+"的名字：");
-            candidate.name[i]=reader.nextLine();
-            System.out.print("候选人"+i+"的个人信息：");
-            candidate.msg[i]=reader.nextLine();
+         for (i = 0; i < candidate.number; i++) {
+            System.out.print("候选人" + i + "的名字：");
+            candidate.name[i] = reader.nextLine();
+            System.out.print("候选人" + i + "的个人信息：");
+            candidate.msg[i] = reader.nextLine();
          }
          System.out.println("设置完成");
          System.out.println("正式使用时，请让你的小伙伴输入：" + InetAddress.getLocalHost().getHostAddress());
@@ -66,22 +66,22 @@ public class Client{
       } catch (Exception e) {
          System.out.println("未知错误222" + e);
       }
-      for(i=0;i<me.candidate.number;i++)
-      {
-         System.out.print("候选人"+i+"名字"+me.candidate.name[i]);
-         System.out.println("相关信息"+me.candidate.msg[i]);
+      for (i = 0; i < me.candidate.number; i++) {
+         System.out.print("候选人" + i + "名字" + me.candidate.name[i]);
+         System.out.println("相关信息" + me.candidate.msg[i]);
       }
       System.out.println("我是第" + me.id + "位投票者");
       System.out.println("设置你神圣的选票吧！（按1或true表示投该位候选人，其他输入则视为不投）");
       String vote;
-      boolean voteMsg[]=new boolean[me.candidate.number];
-      for(i=0;i<me.candidate.number;i++)
-      {
-       System.out.print("候选人"+i+"的选择是：");
-       vote=reader.nextLine();
-       if(vote.equals("1")||vote.equals("true"))voteMsg[i]=true;
-       else voteMsg[i]=false;
-   }
+      boolean voteMsg[] = new boolean[me.candidate.number];
+      for (i = 0; i < me.candidate.number; i++) {
+         System.out.print("候选人" + i + "的选择是：");
+         vote = reader.nextLine();
+         if (vote.equals("1") || vote.equals("true"))
+            voteMsg[i] = true;
+         else
+            voteMsg[i] = false;
+      }
       System.out.println("等待其他人完成投票...");
       reader.close();
       me.work(voteMsg);

@@ -1,10 +1,8 @@
 package com.svs.controller;
 
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.svs.Candidate;
 import com.svs.Formatter;
 import com.svs.MyClient;
@@ -50,8 +47,7 @@ public class UserController {
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public Object creat(@RequestParam(value = "candidateNumber") int cddNumber,
             @RequestParam(value = "candidateName") String[] cddName,
-            @RequestParam(value = "candidateMsg") String[] cddMsg, 
-            @RequestParam(value = "voterNumber") int voterNumber,
+            @RequestParam(value = "candidateMsg") String[] cddMsg, @RequestParam(value = "voterNumber") int voterNumber,
             @RequestParam(value = "title") String title, HttpServletRequest request)
             throws UnknownHostException, SocketException {
 
@@ -138,7 +134,7 @@ public class UserController {
         }
 
         Map<String, Object> obj = new HashMap<String, Object>();
-        obj.put("result" , JSON.toJSONString(result));
+        obj.put("result", JSON.toJSONString(result));
 
         Formatter.log("已返回投票结果：" + obj.toString() + " 给 " + ip);
 
@@ -174,8 +170,8 @@ public class UserController {
             System.out.println("[" + sdf.format(date) + "] 候选人信息为空，已返回 null 给 " + ip);
             return null;
         } else {
-            System.out.println("[" + sdf.format(date) + "] 已返回候选人信息 " + JSON.toJSONString(UserController.candidate.toObj())
-                    + " 给 " + ip);
+            System.out.println("[" + sdf.format(date) + "] 已返回候选人信息 "
+                    + JSON.toJSONString(UserController.candidate.toObj()) + " 给 " + ip);
             return UserController.candidate.toObj();
         }
     }

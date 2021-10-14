@@ -8,13 +8,7 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
-
-import org.apache.tomcat.jni.Local;
 
 public class Voter {
     int id; // 投票者的编号
@@ -126,7 +120,6 @@ public class Voter {
      * @return 返回int型的含有k个数的数组
      */
     public int[] divideGroup(String s, int digit) {
-        // TODO 发现了一个分组的bug，即第一组全为零时
         int k; // k是分成的组数
         int MOD = s.length() % digit;// MOD是分组的余数
         if (MOD == 0) {
@@ -174,7 +167,7 @@ public class Voter {
         }
         String resultString = resultBigInteger.toString(2);// 转化为二进制字符串
         int trueLength = candidate.number * this.digit; // 应该有的位数
-        int n = trueLength-resultString.length(); // 要补的位数
+        int n = trueLength - resultString.length(); // 要补的位数
 
         String s = "0";
         s = s.repeat(n);
@@ -354,22 +347,32 @@ class communication extends Thread {
         if (choice == false) {
             try {
                 out.writeUTF(sendMsg.toString());
-                receiveMsg[num] = in.readUTF(); 
-                System.out.println(LocalDateTime.now()+"接受到来自"+"编号为"+num+" ip为"+socket.getInetAddress().getHostAddress()+"发送的随机数信息"+receiveMsg[num]+"并返回其"+sendMsg);
+                receiveMsg[num] = in.readUTF();
+                // System.out.println(LocalDateTime.now() + "接受到来自" + "编号为" + num + " ip为"
+                // + socket.getInetAddress().getHostAddress() + "发送的随机数信息" + receiveMsg[num] +
+                // "并返回其" + sendMsg);
+                Formatter.log("接受到编号为 " + num + " , ip为 " + socket.getInetAddress().getHostAddress() + " 发送的随机数信息 "
+                        + receiveMsg[num] + " , 并返回其 " + sendMsg);
                 socket.close();
                 return;
             } catch (IOException e) {
-                System.out.println("正在建立连接（坏消息）+1");
+                // System.out.println("正在建立连接（坏消息）+1");
+                Formatter.log("正在建立连接（坏消息）+1");
             }
         } else if (choice == true) {
             try {
                 receiveMsg[num] = in.readUTF();
                 out.writeUTF(sendMsg.toString());
-                System.out.println(LocalDateTime.now()+"接受到来自"+"编号为"+num+" ip为"+socket.getInetAddress().getHostAddress()+"发送的随机数信息"+receiveMsg[num]+"并返回其"+sendMsg);
+                Formatter.log("接受到编号为 " + num + " , ip为 " + socket.getInetAddress().getHostAddress() + " 发送的随机数信息 "
+                        + receiveMsg[num] + " , 并返回其 " + sendMsg);
+                // System.out.println(LocalDateTime.now() + "接受到来自" + "编号为" + num + " ip为"
+                // + socket.getInetAddress().getHostAddress() + "发送的随机数信息" + receiveMsg[num] +
+                // "并返回其" + sendMsg);
                 socket.close();
                 return;
             } catch (IOException e) {
-                System.out.println("正在建立连接（坏消息）");
+                // System.out.println("正在建立连接（坏消息）");
+                Formatter.log("正在建立连接（坏消息）");
             }
         }
     }
