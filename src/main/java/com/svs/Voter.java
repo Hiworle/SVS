@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.apache.tomcat.jni.Local;
 
@@ -172,7 +173,12 @@ public class Voter {
             resultBigInteger = resultBigInteger.add(new BigInteger(receiveMsg[i]));// 对receiveMsg求和
         }
         String resultString = resultBigInteger.toString(2);// 转化为二进制字符串
+        int trueLength = candidate.number * this.digit; // 应该有的位数
+        int n = trueLength-resultString.length(); // 要补的位数
 
+        String s = "0";
+        s = s.repeat(n);
+        resultString = s.concat(resultString);
         result = divideGroup(resultString, digit); // 二进制字符串分组计算出result
     }
 
