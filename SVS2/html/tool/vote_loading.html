@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script type="text/javascript">
+			document.write('<script src="../../js/fix.js?rd=?rd=' + Math.random() + '"><\/script>');
+		</script>
+		<script type="text/javascript">
+			link(['../../css/tool/oneCardSearch.css', '../../css/tool/cardSelect.css']);
+		</script>
+		<script src="../../js/jquery.min.js"></script>
+	</head>
+	<style>
+	.loading{
+		width: auto;
+		height: 50px;
+		padding-top: 150px;
+		text-align: center;
+		color: #000000;
+		font-size: 15px;	
+	}
+	</style>
+	<body style="background-color: #FEFEFE;">
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">SVS</h1>
+			
+		</header>
+		<div class="loading">
+			<span class="mui-spinner"  ></span>
+			<br>
+			等待所有人完成投票……
+		</div>
+		<script type="text/javascript">
+		var storage = window.sessionStorage;
+		var local = storage.getItem("local");
+		var idcode = storage.getItem("idcode");
+		var vote = storage.getItem("vote").split(",");
+		$.ajax({
+			url: local +"/join",
+			dataType: "json",
+			type: "get",
+			traditional:true,
+			data: {
+			        idCode: idcode,
+					voteMsg: vote,
+			         },
+			success: function (data){
+						storage.setItem("result",JSON.stringify(data));
+						// alert("success");
+						// alert(storage.getItem("result"));
+						location.href="../tool/vote_score.html";
+			         },
+			error: function (data) {
+						alert("error");
+			            
+			         }
+			     })
+		</script>
+
+	</body>
+</html>
